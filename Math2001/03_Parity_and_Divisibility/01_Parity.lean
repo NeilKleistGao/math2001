@@ -13,7 +13,9 @@ example : Odd (7 : ℤ) := by
 
 
 example : Odd (-3 : ℤ) := by
-  sorry
+  dsimp [Odd]
+  use -2
+  numbers
 
 example {n : ℤ} (hn : Odd n) : Odd (3 * n + 2) := by
   dsimp [Odd] at *
@@ -25,7 +27,13 @@ example {n : ℤ} (hn : Odd n) : Odd (3 * n + 2) := by
 
 
 example {n : ℤ} (hn : Odd n) : Odd (7 * n - 4) := by
-  sorry
+  dsimp [Odd] at *
+  obtain ⟨k, hk⟩ := hn
+  use 7 * k + 1
+  calc
+    7 * n - 4 = 7 * (2 * k + 1) - 4 := by rw [hk]
+    _ = 14 * k + 3 := by ring
+    _ = 2 * (7 * k + 1) + 1 := by ring
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x + y + 1) := by
   obtain ⟨a, ha⟩ := hx
@@ -40,7 +48,12 @@ example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y + 2 * y) := by
   sorry
 
 example {m : ℤ} (hm : Odd m) : Even (3 * m - 5) := by
-  sorry
+  dsimp [Odd] at *
+  obtain ⟨k, hk⟩ := hm
+  use 3 * k - 1
+  calc
+    3 * m - 5 = 3 * (2 * k + 1) - 5 := by rw [hk]
+    _ = 2 * (3 * k - 1) := by ring
 
 example {n : ℤ} (hn : Even n) : Odd (n ^ 2 + 2 * n - 5) := by
   sorry
@@ -98,6 +111,22 @@ example (n : ℤ) : Odd (3 * n ^ 2 + 3 * n - 1) := by
   sorry
 
 example (n : ℤ) : ∃ m ≥ n, Odd m := by
-  sorry
+  obtain hn | hn := Int.even_or_odd n
+  · obtain ⟨x, hx⟩ := hn
+    dsimp [Odd]
+    use n + 1
+    constructor
+    extra
+    use x
+    rw [hx]
+  · obtain ⟨x, hx⟩ := hn
+    dsimp [Odd]
+    use n
+    constructor
+    extra
+    use x
+    rw [hx]
+
+
 example (a b c : ℤ) : Even (a - b) ∨ Even (a + c) ∨ Even (b - c) := by
   sorry
